@@ -1,0 +1,5 @@
+{
+  disallowClassLiterals: true,
+  disallowDuplicateAttributes: true,
+  validateAttributeQuoteMarks: "'"
+}
