@@ -1,40 +1,57 @@
 const webpack = require('webpack');
 const conf = require('./gulp.conf');
+const autoprefixer = require('autoprefixer');
+
 module.exports = {
   module: {
     loaders: [
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        use: 'json-loader'
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: 'tslint-loader',
+        use: 'tslint-loader',
         enforce: 'pre'
       },
       {
         test: /\.scss$/,
-        loader: 'to-string-loader!style-loader!css-loader!sass-loader'
+        use: [
+          'to-string-loader',
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: () => [autoprefixer]
+            }
+          },
+          'sass-loader',
+        ]
       },
       {
         test: /\.(jpe?g|gif|png|eot|svg|woff|woff2|ttf)$/,
-        loader: 'file-loader'
+        use: 'file-loader'
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loaders: 'ts-loader'
+        use: 'ts-loader'
       },
       {
         test: /\.pug/,
-        loader: 'raw-loader!pug-html-loader'  // ?{"pretty":true,"exports":false}
+        use: [
+          'raw-loader',
+          'pug-html-loader'
+        ]
       }
     ]
   },
   plugins: [
     new webpack.ContextReplacementPlugin(
-      /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+      /angular(\\|\/)core(\\|\/)(@angular|esm5)/,
       conf.paths.src
     ),
     new webpack.LoaderOptionsPlugin({

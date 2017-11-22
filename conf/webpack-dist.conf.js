@@ -3,7 +3,6 @@ const conf = require('./gulp.conf');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FailPlugin = require('webpack-fail-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -18,37 +17,47 @@ module.exports = {
     loaders: [
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        use: 'json-loader'
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: 'tslint-loader',
+        use: 'tslint-loader',
         enforce: 'pre'
       },
       {
         test: /\.scss$/,
         exclude: /\.component\.scss/,
         use: extractSass.extract({
-          loader: 'css-loader?minimize!sass-loader'
+          use: ['css-loader?minimize', 'sass-loader']
         })
       },
       {
         test: /\.component\.scss$/,
-        loader: 'to-string-loader!style-loader!css-loader?minimize!sass-loader'
+        use: ['to-string-loader', 'style-loader', 'css-loader?minimize', 'sass-loader']
+      },
+      {
+        test: /\.scss/,
+        use: {
+          loader: 'postcss-loader',
+          options: {
+            ident: 'postcss',
+            plugins: () => [autoprefixer]
+          }
+        }
       },
       {
         test: /\.(jpe?g|gif|png|eot|svg|woff|woff2|ttf)$/,
-        loader: 'file-loader'
+        use: 'file-loader'
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: 'ts-loader'
+        use: 'ts-loader'
       },
       {
         test: /\.pug/,
-        loader: 'raw-loader!pug-html-loader' // ?{"pretty":true,"exports":false}
+        use: ['raw-loader', 'pug-html-loader']
       }
     ]
   },
@@ -65,12 +74,11 @@ module.exports = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    FailPlugin,
     new HtmlWebpackPlugin({
       template: conf.path.src('index.pug')
     }),
     new webpack.ContextReplacementPlugin(
-      /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+      /angular(\\|\/)core(\\|\/)(@angular|esm5)/,
       conf.paths.src
     ),
     new webpack.DefinePlugin({
@@ -84,7 +92,6 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor'}),
     new webpack.LoaderOptionsPlugin({
       options: {
-        postcss: () => [autoprefixer],
         resolve: {},
         ts: {
           configFile: 'tsconfig.json'
