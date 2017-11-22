@@ -1,2 +1,27 @@
-.container
-  h1 Hello World!
+mat-toolbar(color='primary')
+  button(mat-icon-button='', [mat-menu-trigger-for]='menu')
+    mat-icon more_vert
+  span Angular Material Example
+
+  mat-menu(#menu='matMenu')
+    button(mat-menu-item='')
+      mat-icon dialpad
+      span Menu 1
+    button(mat-menu-item='', disabled='')
+      mat-icon voicemail
+      span Menu 2
+    button(mat-menu-item='')
+      mat-icon notifications_off
+      span Menu 3
+
+mat-card.example-card
+  mat-card-header
+    .example-header-image(mat-card-avatar='')
+    mat-card-title Angular
+    mat-card-subtitle Material 2
+  img(mat-card-image='', src='https://angular.io/assets/images/logos/angular/angular.svg', height='300px')
+  mat-card-content
+    p Material Design components for Angular
+  mat-card-actions
+    button(mat-button='') LIKE
+    button(mat-button='') SHARE

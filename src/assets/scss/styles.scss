@@ -1,5 +1,6 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/**
+ * @author Nestor Britez
+ */
 
-body {
-  background-color: #eee;
-}
+@import "reset";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
